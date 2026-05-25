@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>2級ビオトープ計画管理士 練習テスト（択一50問）</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+      background: #f5f5f5;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .question {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0 15px;
+    }
+    .question:last-child {
+      border-bottom: none;
+    }
+    .question-title {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .options label {
+      margin-right: 12px;
+      display: inline-block;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .result.ok {
+      background: #e3f7e3;
+      color: #146314;
+    }
+    .result.ng {
+      background: #ffecec;
+      color: #a30000;
+    }
+    .btn-area {
+      text-align: center;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: #0070f3;
+      color: #fff;
+    }
+    button:hover {
+      background: #0059c1;
+    }
+    .detail {
+      margin-top: 10px;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+    .correct {
+      color: #146314;
+      font-weight: bold;
+    }
+    .incorrect {
+      color: #a30000;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>2級ビオトープ計画管理士 練習テスト</h1>
+    <h2>択一50問（番号＋選択肢のみ）</h2>
+    <p>
+      ※実際の問題文は著作権の関係で掲載していません。<br>
+      手元の問題用紙を見ながら、「問番号」と「選択肢番号（1〜5）」だけをここで回答してください。
+    </p>
+
+    <div id="questions"></div>
+
+    <div class="btn-area">
+      <button id="submitBtn">採点する</button>
+    </div>
+
+    <div id="result" class="result" style="display:none;"></div>
+    <div id="detail" class="detail"></div>
+  </div>
+
+  <script>
+    // 2級ビオトープ計画管理士（通常受験・択一50問）の正解
+    // PDF「2級ビオトープ計画管理士 択一問題·小論文 通常受験·他部門受験」の表より
+    // 1〜50問の正解番号（1〜5）
+    const correctAnswers = [
+      5, 1, 5, 3, 5, 3, 1, 2, 4, 4,
+      3, 4, 3, 4, 2, 3, 2, 4, 5, 1,
+      2, 2, 4, 1, 5, 4, 1, 1, 5, 2,
+      3, 4, 5, 1, 1, 2, 4, 4, 2, 4,
+      3, 2, 4, 2, 1, 2, 5, 5, 1, 5
+    ];
+
+    const totalQuestions = correctAnswers.length;
+
+    function createQuestions() {
+      const container = document.getElementById('questions');
+
+      for (let i = 0; i < totalQuestions; i++) {
+        const qNum = i + 1;
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question';
+
+        const title = document.createElement('div');
+        title.className = 'question-title';
+        title.textContent = `問${qNum}`;
+
+        const note = document.createElement('div');
+        note.style.fontSize = '13px';
+        note.style.color = '#555';
+        note.textContent = '手元の問題用紙の「問' + qNum + '」を見て、正しいと思う選択肢番号（1〜5）を選んでください。';
+
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'options';
+
+        for (let opt = 1; opt <= 5; opt++) {
+          const label = document.createElement('label');
+          const input = document.createElement('input');
+          input.type = 'radio';
+          input.name = 'q' + qNum;
+          input.value = opt;
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(' ' + opt));
+          optionsDiv.appendChild(label);
+        }
+
+        qDiv.appendChild(title);
+        qDiv.appendChild(note);
+        qDiv.appendChild(optionsDiv);
+        container.appendChild(qDiv);
+      }
+    }
+
+    function grade() {
+      let score = 0;
+      let unanswered = 0;
+      let detailText = '';
+
+      for (let i = 0; i < totalQuestions; i++) {
+        const qNum = i + 1;
+        const radios = document.getElementsByName('q' + qNum);
+        let selected = null;
+
+        for (const r of radios) {
+          if (r.checked) {
+            selected = parseInt(r.value, 10);
+            break;
+          }
+        }
+
+        const correct = correctAnswers[i];
+
+        if (selected === null) {
+          unanswered++;
+          detailText += `問${qNum}: 未回答（正解: ${correct}）\n`;
+        } else if (selected === correct) {
+          score++;
+          detailText += `問${qNum}: ✅ 正解 ${selected}\n`;
+        } else {
+          detailText += `問${qNum}: ❌ 不正解（あなた: ${selected} / 正解: ${correct}）\n`;
+        }
+      }
+
+      const resultDiv = document.getElementById('result');
+      const detailDiv = document.getElementById('detail');
+      const percent = Math.round((score / totalQuestions) * 100);
+
+      resultDiv.style.display = 'block';
+      resultDiv.className = 'result ' + (percent >= 60 ? 'ok' : 'ng');
+      resultDiv.textContent =
+        `得点: ${score} / ${totalQuestions}（${percent}%） ` +
+        `(未回答: ${unanswered} 問) ` +
+        (percent >= 60 ? '→ 合格ライン目安クリア（仮）' : '→ もう一度復習しましょう');
+
+      detailDiv.textContent = detailText;
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', grade);
+
+    // 初期表示で設問を生成
+    createQuestions();
+  </script>
+</body>
+</html>
