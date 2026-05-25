@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>お題ランダム3つ</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    button { width: 100%; padding: 15px; font-size: 20px; }
+    .item { font-size: 18px; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>撮影お題ランダム3つ</h1>
+  <button onclick="pick()">お題を出す</button>
+  <div id="out"></div>
+
+  <script>
+    const tasks = [
+      "赤い葉または赤みのある植物",
+      "黄色い花",
+      "白い花",
+      "紫色の花",
+      "丸い葉の植物",
+      "細長い葉の植物",
+      "つる状の植物",
+      "苔がついている植物または石",
+      "新芽（明るい緑色の葉）",
+      "葉の裏側が見える植物",
+      "三角形に見える葉",
+      "丸い実",
+      "落ちている葉っぱ",
+      "落ちている枝（10cm以上）",
+      "木の幹の分岐",
+      "木の根が地表に出ている部分",
+      "虫食い穴のある葉",
+      "水辺の植物",
+      "シダ植物",
+      "竹または節のある植物",
+      "水が写る場所",
+      "石が3つ以上写る場所",
+      "地面の凹凸が見える場所",
+      "影がはっきり写る植物",
+      "倒木または切り株",
+      "木道と植物",
+      "柵と植物",
+      "案内板の近くの植物",
+      "ベンチの近くの植物",
+      "農園エリアの支柱と植物"
+    ];
+
+    function pick() {
+      const s = [...tasks].sort(() => Math.random() - 0.5).slice(0, 3);
+      document.getElementById("out").innerHTML =
+        s.map((x, i) => `<p class='item'>${i+1}. ${x}</p>`).join("");
+    }
+  </script>
+</body>
+</html>
